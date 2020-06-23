@@ -29,23 +29,22 @@
 						everything handled via server-side scriptes
 			-->
 			
-			<% 
-				if (games) {games.forEach(function(tb_row)) { %>
+			<% if (games) {games.forEach(function(game) { %>
 					<tr> 
-						<td><%= tb_row.game_date%></td>
-						<td><%= tb_row.visitor_name%></td>
-						<td><%= tb_row.home_score%></td>
-						<td><%= tb_row.visitor_score%></td>
+						<td><%= game.game_date%></td>
+						<td><%= game.visitor_name%></td>
+						<td><%= game.home_score%></td>
+						<td><%= game.visitor_score%></td>
 						
-						<% if (tb_row.home_score > tb_row.visitor_score) {%>
+						<% if (game.home_score > game.visitor_score) {%>
 							<td> CU </td>
 						<% }%>
 						
-						<% if (tb_row.visitor_score > tb_row.home_score) {%>
-							<td><%= tb_row.visitor_name %>
-							
+						<% if (game.visitor_score > game.home_score) {%>
+							<td><%= game.visitor_name %>
+						<% }%>
 					</tr>
-					<% ]);	}%>
+					<% });	}%>
 			
 		</table>
 		<br>
@@ -56,12 +55,12 @@
 			</tr>
 			<tr>
 				<td> 
-					<% if(wins) {
+					<% if(wins) { %>
 						<%= wins[0].count %>
 					<%}%>
 				</td>
 				<td> 
-					<% if(losses) {
+					<% if(losses) { %> 
 						<%= losses[0].count %>
 					<%}%>
 				</td>

@@ -55,7 +55,7 @@ app.use(express.static(__dirname + '/'));//This line is necessary for us to use 
 
   		/home/pick_color - post request (color_message)
   				This route will be used for reading in a post request from the user which provides the color message for the default color.
-  				We'll be "hard-coding" this to only work with the Default Color Button, which will pass in a color of #FFFFFF (white).
+  				We'll be 'hard-coding' this to only work with the Default Color Button, which will pass in a color of #FFFFFF (white).
   				The parameter, color_message, will tell us what message to display for our default color selection.
   				This route will then render the home page's view (pages/home)
 
@@ -83,15 +83,15 @@ app.use(express.static(__dirname + '/'));//This line is necessary for us to use 
 // login page 
 app.get('/', function(req, res) {
 	res.render('pages/login',{
-		local_css:"signin.css", 
-		my_title:"Login Page"
+		local_css:'signin.css', 
+		my_title:'Login Page'
 	});
 });
 
 // registration page 
 app.get('/register', function(req, res) {
 	res.render('pages/register',{
-		my_title:"Registration Page"
+		my_title:'Registration Page'
 	});
 });
 
@@ -102,7 +102,7 @@ app.get('/home', function(req, res) {
 	db.any(query)
         .then(function (rows) {
             res.render('pages/home',{
-				my_title: "Home Page",
+				my_title: 'Home Page',
 				data: rows,
 				color: '',
 				color_msg: ''
@@ -122,8 +122,8 @@ app.get('/home', function(req, res) {
 
 
 app.get('/home/pick_color', function(req, res) {
-	var color_choice = req.query.color_selection; // Investigate why the parameter is named "color_selection"
-	var color_options = "SELECT * FROM favorite_colors;"; // Write a SQL query to retrieve the colors from the database
+	var color_choice = req.query.color_selection; // Investigate why the parameter is named 'color_selection'
+	var color_options = 'SELECT * FROM favorite_colors;'; // Write a SQL query to retrieve the colors from the database
 	var color_message = "SELECT color_msg FROM favorite_colors WHERE hex_value = '" + color_choice + "';";// Write a SQL query to retrieve the color message for the selected color
 	db.task('get-everything', task => {
         return task.batch([
@@ -133,7 +133,7 @@ app.get('/home/pick_color', function(req, res) {
     })
     .then(info => {
     	res.render('pages/home',{
-				my_title: "Home Page",
+				my_title: 'Home Page',
 				data: info[0], // Return the color options
 				color: color_choice, // Return the color choice
 				color_msg: info[1][0].color_msg// Return the color message
@@ -156,8 +156,8 @@ app.post('/home/pick_color', function(req, res) {
 	var color_hex = req.body.color_hex;
 	var color_name = req.body.color_name;
 	var color_message = req.body.color_message;
-	var insert_statement = "INSERT INTO favorite_colors(hex_value, name, color_msg) VALUES ('" + color_hex + "','" + color_name + "','" + color_message +"') ON CONFLICT DO NOTHING;"; // Write a SQL statement to insert a color into the favorite_colors table
-	var color_select = "SELECT * FROM favorite_colors;";// Write a SQL statement to retrieve all of the colors in the favorite_colors table
+	var insert_statement = "INSERT INTO favorite_colors(hex_value, name, color_msg) VALUES('" + color_hex + "','" + color_name + "','" + color_message +"') ON CONFLICT DO NOTHING;"; // Write a SQL statement to insert a color into the favorite_colors table
+	var color_select = 'SELECT * FROM favorite_colors;';// Write a SQL statement to retrieve all of the colors in the favorite_colors table
 
 	db.task('get-everything', task => {
         return task.batch([
@@ -167,7 +167,7 @@ app.post('/home/pick_color', function(req, res) {
     })
     .then(info => {
     	res.render('pages/home',{
-				my_title: "Home Page",
+				my_title: 'Home Page',
 				data: info[1], // Return the color choices
 				color: color_hex, // Return the hex value of the color added to the table
 				color_msg: color_message// Return the color message of the color added to the table
@@ -184,13 +184,12 @@ app.post('/home/pick_color', function(req, res) {
     });
 });
 
-
-
+/*
 app.get('/team-stats', function(req,res)
 {
-	var games = "SELECT * FROM football_games;";
-	var wins = "SELECT COUNT(*) FROM football_games WHERE home_score > visitor_score;";
-	var losses = "SELECT COUNT(*) FROM football_games WHERE visitor_score > home_score;";
+	var games = 'SELECT * FROM football_games;';
+	var wins = 'SELECT COUNT(*) FROM football_games WHERE home_score > visitor_score;';
+	var losses = 'SELECT COUNT(*) FROM football_games WHERE visitor_score > home_score;';
 	
 	db.task('get-everything', task => {
     	return task.batch([
@@ -201,7 +200,7 @@ app.get('/team-stats', function(req,res)
 	})
 	.then(data => {
 		res.render('pages/team_stats',{
-			my_title: "Team Stats",
+			my_title: 'Team Stats',
 			games: data[0],
 			wins: data[1],
 			losses: data[2]
@@ -211,13 +210,49 @@ app.get('/team-stats', function(req,res)
     // display error message in case an error
         console.log('error', err);
         res.render('pages/team_stats',{
-			my_title: "Team Stats",
+			my_title: 'Team Stats',
 			games: '',
 			wins: '',
 			losses: ''
 		})
 	});
 
+});
+
+*/
+
+app.get('/team_stats', function(req, res)
+{
+  var games = 'select * from football_games;';
+  var wins = 'select count(*) from football_games where home_score > visitor_score;';
+  var losses = 'select count(*) from football_games where home_score < visitor_score;';
+  db.task('get-everything', task => {
+    return task.batch ([
+      task.any(games),
+      task.any(wins),
+      task.any(losses)
+    ]);
+  })
+    .then(data => {
+      res.render('pages/team_stats', {
+        my_title: "Team Stats",
+        games: data[0],
+        wins: data[1],
+        losses: data[2],
+      })
+    })
+    .catch(error => {
+        // display error message in case an error
+            console.log('error', err);
+            res.render('pages/team_stats', {
+                title: 'Team Stats',
+                games: '',
+                wins: '',
+                losses: '',
+                color: '',
+                color_msg: ''
+            })
+      });
 });
 
 
@@ -227,7 +262,7 @@ app.get('/player_info', function(req, res){
 	db.any(player)
     .then(function (players) {
         res.render('pages/player_info',{
-			my_title: "Player Info",
+			my_title: 'Player Info',
 			players: players,
 			stats: '',
 			games: ''
@@ -238,7 +273,7 @@ app.get('/player_info', function(req, res){
         // display error message in case an error
         console.log('error', err);
         res.render('pages/player_info',{
-			my_title: "My Title Here",
+			my_title: 'My Title Here',
 			players: '',
 			stats: '',
 			games: ''
@@ -247,9 +282,9 @@ app.get('/player_info', function(req, res){
 });
 
 app.get('/player_info/post', function(req, res){
-	var player = "SELECT id, name FROM football_players;";
-	var stats = "SELECT * FROM football_players WHERE id = " + player + ";";
-	var games = "SELECT COUNT(*) FROM football_games where " + player + " = any(players);";
+	var player = 'SELECT id, name FROM football_players;';
+	var stats = 'SELECT * FROM football_players WHERE id = ' + player + ';';
+	var games = 'SELECT COUNT(*) FROM football_games where ' + player + ' = any(players);';
 	
 	db.task('get-everything', task => {
    	 return task.batch([
@@ -260,7 +295,7 @@ app.get('/player_info/post', function(req, res){
 	})
 	.then(data => {
 		res.render('pages/player_info',{
-			my_title: "Player Info",
+			my_title: 'Player Info',
 			players: data[0],
 			stats: data[1],
 			games: data[2]
@@ -270,7 +305,7 @@ app.get('/player_info/post', function(req, res){
     // display error message in case an error
         console.log('error', err);
         res.render('pages/player_info',{
-			my_title: "Page Title Here",
+			my_title: 'Page Title Here',
 			players: '',
 			stats: '',
 			games: ''
