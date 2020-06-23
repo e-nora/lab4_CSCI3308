@@ -223,9 +223,9 @@ app.get('/team-stats', function(req,res)
 
 app.get('/team_stats', function(req, res)
 {
-  var games = 'select * from football_games;';
-  var wins = 'select count(*) from football_games where home_score > visitor_score;';
-  var losses = 'select count(*) from football_games where home_score < visitor_score;';
+  var games = 'SELECT  * FROM football_games;';
+  var wins = 'SELECT COUNT(*) FROM football_games WHERE home_score > visitor_score;';
+  var losses = 'SELECT COUNT(*) FROM football_games WHERE home_score < visitor_score;';
   db.task('get-everything', task => {
     return task.batch ([
       task.any(games),
@@ -264,8 +264,8 @@ app.get('/player_info', function(req, res){
         res.render('pages/player_info',{
 			my_title: 'Player Info',
 			players: players,
-			stats: '',
-			games: ''
+			player_stats: '',
+			player_games: ''
 		})
 
     })
@@ -275,30 +275,30 @@ app.get('/player_info', function(req, res){
         res.render('pages/player_info',{
 			my_title: 'My Title Here',
 			players: '',
-			stats: '',
-			games: ''
+			player_stats: '',
+			player_games: ''
 		})
 	});
 });
 
 app.get('/player_info/post', function(req, res){
 	var player = 'SELECT id, name FROM football_players;';
-	var stats = 'SELECT * FROM football_players WHERE id = ' + player + ';';
-	var games = 'SELECT COUNT(*) FROM football_games where ' + player + ' = any(players);';
+	var player_stats = 'SELECT * FROM football_players WHERE id = ' + player + ';';
+	var player_games = 'SELECT COUNT(*) FROM football_games where ' + player + ' = ANY(players);';
 	
 	db.task('get-everything', task => {
    	 return task.batch([
 	        task.any(player),
-	        task.any(stats),
-	        task.any(games)
+	        task.any(player_stats),
+	        task.any(player_games)
 	    ]);
 	})
-	.then(data => {
+	.then(info => {
 		res.render('pages/player_info',{
 			my_title: 'Player Info',
-			players: data[0],
-			stats: data[1],
-			games: data[2]
+			players: info[0],
+			player_stats: info[1],
+			player_games: info[2]
 		})
 	})
 	.catch(err => {

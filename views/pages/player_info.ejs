@@ -7,8 +7,8 @@
 				<div class="card">
 				<!-- TODO: Modify the ejs code below, to conditionally set the image_src to be from our chosen player -->
 				  <% 
-				  if (stats){
-				  		var image_src = '../resources/img/player' + stats[0].id + '.jpg';
+				  if (player_stats){
+				  		var image_src = '../resources/img/player' + player_stats[0].id + '.jpg';
 				  }
 				  else{
 				  		var image_src = '../resources/img/helmet.jpg';
@@ -31,33 +31,33 @@
 			<div class="col-8">
 				<div class="table-responsive">
 					<table class="table">
-					<% if (stats) {%>
+					<% if (player_stats) {%>
 						<tr>
 							<!-- TODO: Set Player Information
 							 			If a player has been selected, fill in their information in each of the fields below.
 							 		    You'll need to calculate here the player's average rushing, receiving, and passing yards.-->
 							<th>Year</th>
-							<td><%-stats[0].year %></td>
+							<td><%-player_stats[0].year %></td>
 						</tr>
 						<tr>
 							<th>Major</th>
-							<td><%-stats[0].major %></td>
+							<td><%-player_stats[0].major %></td>
 						</tr>
 						<tr>
 							<th>Games Played</th>
-							<td><%-games[0].count %></td>
+							<td><%-player_games[0].count %></td>
 						</tr>
 						<tr>
-							<td>Passing Yards: <%-stats[0].passing_yards %> </td>
-							<td>Avg. Passing Yards: <%-stats[0].passing_yards / games[0].count %></td>
+							<td>Passing Yards: <%-player_stats[0].passing_yards %> </td>
+							<td>Avg. Passing Yards: <%-player_stats[0].passing_yards / player_games[0].count %></td>
 						</tr>
 						<tr>
-							<td>Rushing Yards: <%-stats[0].rushing_yards %> </td>
-							<td>Avg. Rushing Yards: <%-stats[0].rushing_yards / games[0].count %> </td>
+							<td>Rushing Yards: <%-player_stats[0].rushing_yards %> </td>
+							<td>Avg. Rushing Yards: <%-player_stats[0].rushing_yards / player_games[0].count %> </td>
 						</tr>
 						<tr>
-							<td>Receiving Yards: <%-stats[0].rushing_yards %> </td>
-							<td>Avg. Receiving Yards: <%-stats[0].receiving_yards / games[0].count %></td>
+							<td>Receiving Yards: <%-player_stats[0].rushing_yards %> </td>
+							<td>Avg. Receiving Yards: <%-player_stats[0].receiving_yards / player_games[0].count %></td>
 						</tr>
 						
 						<%} else {%>
